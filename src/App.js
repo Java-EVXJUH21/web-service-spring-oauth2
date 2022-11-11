@@ -1,25 +1,33 @@
-import logo from './logo.svg';
 import './App.css';
+import {useEffect, useState} from "react";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    let [user, setUser] = useState(null);
+
+    useEffect(() => {
+        fetch('http://localhost:8080/user')
+            .then(res => res.json())
+            .then(setUser)
+            .catch(err => {
+                console.error("An error occurred while fetching user.");
+                console.error(err);
+            });
+    }, []);
+
+    if (user != null) {
+        return (<>
+            <h1>{user.login}</h1>
+            <br/>
+            <img src={user.avatar_url} alt={'icon'}></img>
+        </>)
+    }
+
+    return (
+        <div className="App">
+            <a href="/oauth2/authorization/github">Authorize Github</a>
+            <br/>
+        </div>
+    );
 }
 
 export default App;
